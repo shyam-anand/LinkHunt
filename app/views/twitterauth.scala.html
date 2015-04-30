@@ -1,0 +1,12 @@
+@()
+
+@content = {
+  <div class="container center-block">
+    <div clas="jumbotron">
+      <h1>Sign In</h1>
+      <p><a href="/signin">Click here to sign in with your Twitter account!</a></p>
+    </div>
+  </div>
+}
+
+@stream(Html(""), content, Html(""))

@@ -1,0 +1,30 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET        /                         controllers.TwitStream.index
+
+# TwitStream
+GET        /twitstream/              controllers.TwitStream.untrail()
+GET        /twitstream               controllers.TwitStream.index
+#GET        /twitstream/:query        controllers.TwitStream.index(query)
+GET        /signin                   controllers.TwitterAuth.authenticate
+GET        /authenticate             controllers.TwitterAuth.authenticate
+GET        /authenticated            controllers.TwitterAuth.authenticated
+GET        /stream/                  controllers.TwitStream.getStream
+#GET        /stream/:query            controllers.TwitStream.getStream(query)
+
+# Map static resources from the /public folder to the /assets URL path
+GET        /assets/*file             controllers.Assets.at(path="/public", file)
+
+# for webjars
+GET        /webjars/*file            controllers.WebJarAssets.at(file)
+
+# favicon
+GET        /favicon.ico              controllers.Assets.at(path="/public", file="favicon.ico")
+
+#Cache Test
+GET        /cacheget                 controllers.TestController.cacheget
+GET        /cacheset                 controllers.TestController.cacheset
+GET        /requestProps             controllers.TestController.requestProps
