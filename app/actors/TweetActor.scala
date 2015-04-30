@@ -52,13 +52,7 @@ class TweetActor(authData: Map[String, String]) extends Actor with Stash {
     }
 
     override def onStatus(status: Status): Unit = {
-      // TODO: Save tweets, add check for retweets
-      if ( status.isRetweet ) { //|| !status.getLang.equals("en") ) {
-        play.Logger.debug(" -- ignoring tweet --")
-        play.Logger.debug("status.getLang = " + status.getLang + ", status.isRetweet = " + status.isRetweet)
-      } else {
         parent ! TweetMessage(status)
-      }
     }
 
     override def onTrackLimitationNotice(i: Int): Unit = {
@@ -77,6 +71,7 @@ class TweetActor(authData: Map[String, String]) extends Actor with Stash {
   val twitterStream = new TwitterStreamFactory(config).getInstance()
   twitterStream.addListener(simpleStatusListener)
   val filterQuery = new FilterQuery
+  val userId = twitterStream.getId
   play.Logger.info("Connected to twitterStream as " + twitterStream.getScreenName)
   connectionStatus = true
 
@@ -96,19 +91,19 @@ class TweetActor(authData: Map[String, String]) extends Actor with Stash {
 
     case StopWatching =>
       play.Logger.debug("[TweetActor]  ----------- Received StopWatching -----------")
-      twitterStream.cleanUp
+      twitterStream.cleanUp()
   }
 
   def watchTerm(term: String) {
     play.Logger.debug("[TweetActor.watchTerm] Setting watchTerm to '" + term + "'")
-    twitterStream.cleanUp
+    twitterStream.cleanUp()
     val trackStrings = term.split(",")
     filterQuery.track(trackStrings)
     twitterStream.filter(filterQuery)
   }
 
   override def postStop() = {
-    twitterStream.shutdown
+    twitterStream.shutdown()
     play.Logger.debug("Stopped TweetActor")
   }
 }

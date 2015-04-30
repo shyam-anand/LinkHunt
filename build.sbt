@@ -1,4 +1,4 @@
-name := """play-scala-app"""
+name := """LinkHunt"""
 
 version := "1.0-SNAPSHOT"
 
@@ -11,7 +11,6 @@ libraryDependencies ++= Seq(
   anorm,
   cache,
   ws,
-  "org.sorm-framework" % "sorm" % "0.3.18",
   "com.twitter" % "hbc-core" % "2.2.0",
   "mysql" % "mysql-connector-java" % "5.1.6",
   "org.apache.httpcomponents" % "httpclient" % "4.4.1",
@@ -20,5 +19,3 @@ libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.3.0-2",
   "org.webjars.bower" % "bootstrap-css-only" % "3.3.4"
 )
-
-

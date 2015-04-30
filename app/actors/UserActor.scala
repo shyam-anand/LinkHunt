@@ -103,13 +103,72 @@ class UserActor(out: ActorRef, authData: Map[String, String]) extends Actor with
           play.Logger.error("Something went wrong")
       }
     // Received from TweetActor
-    case TweetMessage(tweet: twitter4j.Status) =>
+    case TweetMessage(status: twitter4j.Status) =>
       play.Logger.debug("Received TweetMessage")
 
-      if (tweet.isRetweet) {
+      if (status.isRetweet) {
         play.Logger.debug("isRetweet, ignoring")
       } else {
-        val tweetObj = Tweet(tweet.getUser, tweet.getText, tweet.getCreatedAt.toString, tweet.getSource)
+
+        val contributers = status.getContributors.mkString(",")
+        val replyToUserId = status.getInReplyToUserId
+        val replyToScreenName = status.getInReplyToScreenName
+        val replytoTweet = status.getInReplyToStatusId
+        val geoLocation = status.getGeoLocation
+        val lat = geoLocation.getLatitude
+        val long = geoLocation.getLongitude
+        val place = status.getPlace
+        val placeId = place.getId
+        val placeName = place.getFullName
+        val streetAddress = place.getStreetAddress
+        val country = place.getCountry
+        val countriesWithHeldIn = status.getWithheldInCountries.mkString(",")
+
+        val urlEntities = for {
+          urlEntity <- status.getURLEntities
+          url <- Map (
+            "displayUrl" -> urlEntity.getDisplayURL,
+            "expandedUrl" -> urlEntity.getExpandedURL,
+            "text" -> urlEntity.getText,
+            "start" -> urlEntity.getStart,
+            "end" -> urlEntity.getEnd
+          )
+        } yield url
+
+        val mentionEntities = for {
+          mentionEntity <- status.getUserMentionEntities
+          mention <- Map (
+            "screenName" -> mentionEntity.getScreenName,
+            "name" -> mentionEntity.getName,
+            "id" -> mentionEntity.getId,
+            "start" -> mentionEntity.getStart,
+            "end" -> mentionEntity.getEnd,
+            "text" -> mentionEntity.getText
+          )
+        } yield mention
+
+        val mediaEntities = for {
+          mediaEntity <- status.getMediaEntities
+          media <- Map (
+            "id" -> mediaEntity.getId,
+            "url" -> mediaEntity.getMediaURL,
+            "httpsUrl" -> mediaEntity.getMediaURLHttps,
+            "sizes" -> mediaEntity.getSizes
+          )
+        } yield media
+
+        val hashtags = for {
+          hashtag <- status.getHashtagEntities
+          ht <- Map(
+            "text" -> hashtag.getText,
+            "start" -> hashtag.getStart,
+            "end" -> hashtag.getEnd
+          )
+        } yield ht
+
+        models.Tweet(status.getId, authData("userid").toLong, status.getUser.getId, status.getUser.getScreenName, status.getText, status.getCreatedAt.formatted("Y-m-d H:i:s"))
+
+        val tweetObj = Tweet(status.getUser, status.getText, status.getCreatedAt.toString, status.getSource)
         val tweetUpdateMessage = TweetUpdateMessage("tweet", tweetObj)
         val tweetUpdateJson = Json.toJson(tweetUpdateMessage)
 
