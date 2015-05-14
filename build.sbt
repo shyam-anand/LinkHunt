@@ -19,3 +19,4 @@ libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.3.0-2",
   "org.webjars.bower" % "bootstrap-css-only" % "3.3.4"
 )
+

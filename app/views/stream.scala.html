@@ -14,12 +14,19 @@
     @scripts
 </head>
 <body>
-    <nav class="navbar navbar-fixed-top nav-container">
+    <nav class="navbar navbar-fixed-top container-fluid nav-container">
         @navleft
-        <div class="navbar navbar-brand pull-right logo-container">
-            <h2 class="logo">TwitStream</h2>
+        <div class="navbar-brand pull-right logo-container">
+            <h2 class="logo">Link Hunt</h2>
+            @*<img height="35" width="150" src="@routes.Assets.at("images/linkhunt-logo.png")" alt="LinkHunt"/>*@
         </div>
     </nav>
+    <div class="alert alert-danger alert-dismissable twitstream-error-msg" id="error">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="error-alert-close-btn">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <span id="error-text"></span>
+    </div>
     <article class="content">
         @content
     </article>

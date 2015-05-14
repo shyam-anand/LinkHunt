@@ -5,7 +5,7 @@ import twitter4j._
 import twitter4j.conf.ConfigurationBuilder
 
 // TweetActor messages
-case object AreYouReady
+case object TweetActorReady
 case class WatchTerm(watchTerm: String)
 case object StopWatching
 case class TweetMessage(tweet: Status)
@@ -68,8 +68,10 @@ class TweetActor(authData: Map[String, String]) extends Actor with Stash {
 
   }
 
+  // Connect to Twitter Stream API
   val twitterStream = new TwitterStreamFactory(config).getInstance()
   twitterStream.addListener(simpleStatusListener)
+
   val filterQuery = new FilterQuery
   val userId = twitterStream.getId
   play.Logger.info("Connected to twitterStream as " + twitterStream.getScreenName)
@@ -80,10 +82,9 @@ class TweetActor(authData: Map[String, String]) extends Actor with Stash {
   play.Logger.debug("[TweetActor] un-stashing")
   unstashAll()
 
-  def afterInit: Receive = {
+  parent ! TweetActorReady
 
-    case AreYouReady =>
-      sender ! true
+  def afterInit: Receive = {
 
     case WatchTerm(term: String) =>
       play.Logger.debug("[TweetActor] Received StartWatching term: " + term)

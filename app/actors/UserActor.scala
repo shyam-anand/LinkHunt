@@ -5,20 +5,40 @@ import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
 import play.api.libs.json._
+import twitter4j.URLEntity
 
+import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
-case class Tweet(user: twitter4j.User, text: String, createdAt: String, source: String)
+case class Tweet(user: twitter4j.User, text: String, urls: Array[Map[String, String]], createdAt: String, source: String)
+case class TwitterError(message: String, code: Int)
 
 object Tweet {
+
+  def makeTweetText(text: String, urls: Array[Map[String, String]]): String = {
+    var tweetText = text
+
+    play.Logger.debug("urls.length: " + urls.length)
+
+    urls foreach { url =>
+      val expandedUrl = url("url")
+      val urlText = url("text")
+      tweetText = text.replaceAll( url("text"), raw"""<a class="timeline-link" data-expanded-url="$expandedUrl">$urlText</a>""" )
+    }
+    play.Logger.debug("new tweetText:" + tweetText)
+    tweetText
+  }
+
+
   implicit val tweetWrites = new Writes[Tweet] {
+
     def writes(tweet: Tweet) = Json.obj(
       "img" -> tweet.user.getProfileImageURL,
       "user" -> tweet.user.getName,
       "screenName" -> tweet.user.getScreenName,
       "isVerified" -> tweet.user.isVerified,
-      "text" -> tweet.text,
+      "text" -> makeTweetText(tweet.text, tweet.urls),
       "createdAt" -> tweet.createdAt,
       "source" -> tweet.source
     )
@@ -63,6 +83,16 @@ object ErrorUpdateMessage {
   }
 }
 
+case class TwitterErrorMessage(messageType: String = "error", data: TwitterError) extends WSMessage[TwitterError]
+object TwitterErrorMessage {
+  implicit val twitterErrorMessageWrites = new Writes[TwitterErrorMessage] {
+    def writes(em: TwitterErrorMessage) = Json.obj(
+      "type" -> "error",
+      "data" -> (em.data.code + ": " + em.data.message)
+    )
+  }
+}
+
 /**
  * UserActor - Interface between client (over web socket) and Twitter Stream (TweetActor)
  */
@@ -79,6 +109,23 @@ class UserActor(out: ActorRef, authData: Map[String, String]) extends Actor with
   watch(tweetActor)
 
   def receive = {
+
+    case TweetActorReady =>
+      become(actualReceiver)
+      unstashAll()
+
+      out ! Json.toJson(ActorReadyMessage(data = "ACTOR_READY")).toString
+
+    case ErrorMessage(message, cause, stackTrace) =>
+      play.Logger.error("[UserActor] Received ErrorMessage from " + sender.path() + " - " + message)
+      throw cause
+      out ! Json.toJson(ErrorUpdateMessage(data = ErrorMessage(message, cause, stackTrace))).toString
+      self ! PoisonPill
+
+    case TwitterError(message, code) =>
+      play.Logger.error("[UserActor] Received TwitterError from " + sender.path() + " - " + message)
+      out ! Json.toJson(TwitterErrorMessage(data = TwitterError(message, code)))
+
     case Terminated =>
       play.Logger.debug(sender().path + " terminated, poisoning self")
       self ! PoisonPill
@@ -96,44 +143,67 @@ class UserActor(out: ActorRef, authData: Map[String, String]) extends Actor with
       val qResult: JsResult[String] = (jsonIn \ "reqType").validate[String]
       qResult match {
         case s: JsSuccess[String] =>
-          val term = (jsonIn \ "term").as[String]
-          play.Logger.debug("Sending SetWatching for term: " + term)
-          tweetActor ! WatchTerm(term)
+          if (s.get.equals("search")) {
+            val term = (jsonIn \ "term").as[String]
+            play.Logger.debug("Sending SetWatching for term: " + term)
+            tweetActor ! WatchTerm(term)
+          } else if (s.get.equals("action")) {
+            val action = (jsonIn \ "action").as[String]
+            play.Logger.debug( "Sending action '$action' to TweetActor" )
+
+            if (action.equals("StopWatching")) {
+              tweetActor ! StopWatching
+            }
+          }
+
         case e: JsError =>
           play.Logger.error("Something went wrong")
       }
+
+
     // Received from TweetActor
     case TweetMessage(status: twitter4j.Status) =>
-      play.Logger.debug("Received TweetMessage")
 
-      if (status.isRetweet) {
-        play.Logger.debug("isRetweet, ignoring")
-      } else {
+      if (!status.isRetweet && status.getLang.equals("en")) {
 
         val contributers = status.getContributors.mkString(",")
         val replyToUserId = status.getInReplyToUserId
         val replyToScreenName = status.getInReplyToScreenName
         val replytoTweet = status.getInReplyToStatusId
-        val geoLocation = status.getGeoLocation
-        val lat = geoLocation.getLatitude
-        val long = geoLocation.getLongitude
-        val place = status.getPlace
-        val placeId = place.getId
-        val placeName = place.getFullName
-        val streetAddress = place.getStreetAddress
-        val country = place.getCountry
-        val countriesWithHeldIn = status.getWithheldInCountries.mkString(",")
 
-        val urlEntities = for {
-          urlEntity <- status.getURLEntities
-          url <- Map (
-            "displayUrl" -> urlEntity.getDisplayURL,
-            "expandedUrl" -> urlEntity.getExpandedURL,
-            "text" -> urlEntity.getText,
-            "start" -> urlEntity.getStart,
-            "end" -> urlEntity.getEnd
+        val geoLocation = for {
+          geoLocationOption <- Option(status.getGeoLocation)
+        } yield {
+          val lat = geoLocationOption.getLatitude
+          val long = geoLocationOption.getLongitude
+        }
+
+        val placeEntities = for {
+          place <- Option(status.getPlace)
+        } yield {
+            val placeId = place.getId
+            val placeName = place.getFullName
+            val streetAddress = place.getStreetAddress
+            val country = place.getCountry
+          }
+
+        val countriesWithHeldIn = for {
+          countriesWithHeldIn <- Option(status.getWithheldInCountries)
+        } yield countriesWithHeldIn
+
+        play.Logger.debug("status.getUrlEntities.length: " + status.getURLEntities.length)
+        val urls = ArrayBuffer.empty[Map[String, String]]
+        status.getURLEntities foreach { urlEntity =>
+          play.Logger.debug("displayUrl: " + urlEntity.getDisplayURL)
+          play.Logger.debug("text: " + urlEntity.getText)
+          urls += Map (
+            "displayUrl" -> urlEntity.getDisplayURL.toString,
+            "url" -> urlEntity.getExpandedURL.toString,
+            "text" -> urlEntity.getText.toString,
+            "start" -> urlEntity.getStart.toString,
+            "end" -> urlEntity.getEnd.toString
           )
-        } yield url
+        }
 
         val mentionEntities = for {
           mentionEntity <- status.getUserMentionEntities
@@ -166,14 +236,16 @@ class UserActor(out: ActorRef, authData: Map[String, String]) extends Actor with
           )
         } yield ht
 
-        models.Tweet(status.getId, authData("userid").toLong, status.getUser.getId, status.getUser.getScreenName, status.getText, status.getCreatedAt.formatted("Y-m-d H:i:s"))
+        if (status.getURLEntities.length > 0) {
+          models.Tweet(status.getId, authData("userid").toLong, status.getUser.getId, status.getUser.getScreenName, status.getText, status.getCreatedAt.formatted("Y-m-d H:i:s"))
 
-        val tweetObj = Tweet(status.getUser, status.getText, status.getCreatedAt.toString, status.getSource)
-        val tweetUpdateMessage = TweetUpdateMessage("tweet", tweetObj)
-        val tweetUpdateJson = Json.toJson(tweetUpdateMessage)
+          val tweetObj = Tweet(status.getUser, status.getText, urls.toArray, status.getCreatedAt.toString, status.getSource)
+          val tweetUpdateMessage = TweetUpdateMessage("tweet", tweetObj)
+          val tweetUpdateJson = Json.toJson(tweetUpdateMessage)
 
-        play.Logger.debug("Sending to out -- " + tweetUpdateJson.toString)
-        out ! tweetUpdateJson.toString
+          play.Logger.debug("Sending to out -- " + tweetUpdateJson.toString)
+          out ! tweetUpdateJson.toString
+        }
       }
 
     case "StopWatching" => // Received from client ws
@@ -186,32 +258,6 @@ class UserActor(out: ActorRef, authData: Map[String, String]) extends Actor with
     case Terminated =>
       play.Logger.debug(sender().path + " terminated, poisoning self")
       self ! PoisonPill
-  }
-
-  override def preStart(): Unit = {
-
-    implicit val timeout = Timeout(5 seconds)
-    val tweetActorStatus: Future[Boolean] = (tweetActor ? AreYouReady).mapTo[Boolean]
-    play.Logger.debug("waiting for status from TweetActor")
-
-    tweetActorStatus onComplete {
-      case Success(status) =>
-        if (status) {
-          play.Logger.info("[UserActor] tweetActor created")
-
-          become(actualReceiver)
-          unstashAll()
-
-          val message = ActorReadyMessage(data = "ACTOR_READY")
-          val msgJson = Json.toJson(message)
-          out ! msgJson.toString
-        } else {
-          play.Logger.error("Error creating tweetActor")
-        }
-      case Failure(t) =>
-        play.Logger.error(t.getMessage)
-    }
-
   }
 
   override def postStop(): Unit = {

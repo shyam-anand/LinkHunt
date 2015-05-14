@@ -22,6 +22,7 @@ object TwitterAuth extends Controller {
   final val SESSION_KEY = "authuuid"
 
   /**
+   * Implementation of Sign In with Twitter
    * Redirects user to Twitter Authorization URL
    *
    */
@@ -30,22 +31,23 @@ object TwitterAuth extends Controller {
     val uuid = java.util.UUID.randomUUID().toString
     val callback = "http://"  + request.host + "/authenticated?" + SESSION_KEY + "=" + uuid
 
-    val twitter: Twitter = getTwitter()
+    val twitter = createTwitterInstance()
     play.Logger.debug("[authenticate] Got Twitter")
     play.Logger.debug("\tconsumerKey: " + twitter.getConfiguration.getOAuthConsumerKey)
     play.Logger.debug("\tconsumerSecret: " + twitter.getConfiguration.getOAuthConsumerSecret)
 
-    val requestToken: RequestToken = twitter.getOAuthRequestToken(callback)
+    val requestToken = twitter.getOAuthRequestToken(callback)
     play.Logger.debug("[authenticate] OAuthRequestToken")
     play.Logger.debug("\trequestToken: " + requestToken.getToken)
     play.Logger.debug("\trequestTokenSecret: " + requestToken.getTokenSecret)
 
-    // For /authorize. Not used for Sign in with Twitter
+    // For /authorize API. Not used for Sign in with Twitter, hence commented
 //    val authUrl = requestToken.getAuthorizationURL()
 //    play.Logger.debug("[authenticate] Authorization URL")
 //    play.Logger.debug("\t" + authUrl)
 
-    Cache.set(CACHE_KEY_TWITTER + uuid, twitter, (3 minutes))
+    // twitter instance and requestToken cached to be used in callback, i.e. authenticated method
+    Cache.set(CACHE_KEY_TWITTER + uuid, twitter, 3 minutes)
     Cache.set(CACHE_KEY_REQUEST_TOKEN + uuid, requestToken, 3 minutes)
 
     val authUrl = requestToken.getAuthenticationURL
@@ -60,6 +62,7 @@ object TwitterAuth extends Controller {
    */
   def authenticated = Action { implicit request =>
     play.Logger.debug(" --- [authenticated] ---")
+
     val tokens = for {
       oauth_token <- request.getQueryString("oauth_token")
       oauth_verifier <- request.getQueryString("oauth_verifier")
@@ -67,11 +70,10 @@ object TwitterAuth extends Controller {
 
     tokens match {
       case None =>
-        Ok("Couldn't find oauth_token and/or oauth_verifier")
+        Ok("Authentication failed. Couldn't find oauth_token and/or oauth_verifier")
       case Some( (oauth_token, oauth_verifier) ) =>
 
-        play.Logger.debug("Got tokens")
-        play.Logger.debug("Callback params")
+        play.Logger.debug("[authenticated] Callback params")
         play.Logger.debug("\toauth_token: " + oauth_token)
         play.Logger.debug("\toauth_verifier: " + oauth_verifier)
 
@@ -85,14 +87,13 @@ object TwitterAuth extends Controller {
           case None =>
             play.Logger.error("Couldn't get twitter and/or requestToken from cache")
             InternalServerError("Couldn't get twitter and/or requestToken from cache")
-//            Redirect("/authenticate")
+
           case Some( (uuid, twitter, requestToken) ) =>
 
-            play.Logger.debug("Got Twitter and RequestToken from Cache!")
+            play.Logger.debug("[authenticated] Got Twitter and RequestToken from Cache")
             request.session - ("twitter.requestToken." + request.getQueryString(SESSION_KEY).get)
             request.session - ("twitter.singleton" + request.getQueryString(SESSION_KEY).get)
 
-            play.Logger.debug("[authenticated] Got Twitter")
             play.Logger.debug("\tconsumerKey: " + twitter.getConfiguration.getOAuthConsumerKey)
             play.Logger.debug("\tconsumerSecret: " + twitter.getConfiguration.getOAuthConsumerSecret)
             play.Logger.debug("\toauth_token (cached): " + requestToken.getToken)
@@ -105,8 +106,8 @@ object TwitterAuth extends Controller {
                 play.Logger.debug("\ttoken_secret: " + accessToken.getTokenSecret)
 
                 saveUser(accessToken.getUserId, accessToken.getScreenName, accessToken.getToken, accessToken.getTokenSecret)
-                play.Logger.debug(" --- User saved, redirecting to /twitstream ---")
-                Redirect(routes.TwitStream.index).withSession(
+                play.Logger.debug("[authenticated] User saved, redirecting to /twitstream")
+                Redirect(routes.TwitStream.index()).withSession(
                   request.session
                     + ("userid" -> accessToken.getUserId.toString)
                     + ("tw_user" -> accessToken.getScreenName)
@@ -117,8 +118,8 @@ object TwitterAuth extends Controller {
                   Ok(ex.getMessage)
               }
             } else {
-              play.Logger.error("OAuth tokens do not match")
-              Ok("OAuth tokens do not match")
+              play.Logger.error("OAuth token mismatch")
+              Ok("OAuth token mismatch")
             }
         }
     }
@@ -129,7 +130,7 @@ object TwitterAuth extends Controller {
    * Creates Twitter object used for authorization
    * @return Twitter Twitter object
    */
-  def getTwitter(): Twitter = {
+  private def createTwitterInstance(): Twitter = {
     val appTokens = Map(
       "consumerKey" -> Play.application.configuration.getString("consumerKey").get,
       "consumerSecret" -> Play.application.configuration.getString("consumerSecret").get
