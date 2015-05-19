@@ -31,8 +31,4 @@ object TestController extends Controller {
     )
   }
 
-  def streamUI = Action { implicit request =>
-    Ok (views.html.sampletweets())
-  }
-
 }
