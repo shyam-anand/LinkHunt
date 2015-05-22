@@ -22,9 +22,3 @@ GET        /assets/*file         controllers.Assets.at(path="/public", file)
 
 # for webjars
 GET        /webjars/*file        controllers.WebJarAssets.at(file)
-
-# Test Controller
-GET        /cacheget             controllers.TestController.cacheget
-GET        /cacheset             controllers.TestController.cacheset
-GET        /requestProps         controllers.TestController.requestProps
-GET        /streamui             controllers.TestController.streamUI

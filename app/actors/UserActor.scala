@@ -117,13 +117,13 @@ class UserActor(out: ActorRef, authData: Map[String, String]) extends Actor with
       out ! Json.toJson(ActorReadyMessage(data = "ACTOR_READY")).toString
 
     case ErrorMessage(message, cause, stackTrace) =>
-      play.Logger.error("[UserActor] Received ErrorMessage from " + sender.path() + " - " + message)
+      play.Logger.error("[UserActor] Received ErrorMessage from " + sender.path + " - " + message)
       throw cause
       out ! Json.toJson(ErrorUpdateMessage(data = ErrorMessage(message, cause, stackTrace))).toString
       self ! PoisonPill
 
     case TwitterError(message, code) =>
-      play.Logger.error("[UserActor] Received TwitterError from " + sender.path() + " - " + message)
+      play.Logger.error("[UserActor] Received TwitterError from " + sender.path + " - " + message)
       out ! Json.toJson(TwitterErrorMessage(data = TwitterError(message, code)))
 
     case Terminated =>

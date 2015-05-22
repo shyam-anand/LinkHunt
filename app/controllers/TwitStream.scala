@@ -23,7 +23,13 @@ object TwitStream extends Controller {
   }
 
   def relogin = Action { implicit request =>
-    Ok(views.html.twitterauth())
+    request.session.get("userid") match {
+      case Some(userid) =>
+        play.Logger.debug("User is logged in. userid = " + request.session.get("userid").get)
+        Ok(views.html.tweets())
+      case None =>
+        Ok(views.html.twitterauth())
+    }
   }
 
   def untrail() = Action {

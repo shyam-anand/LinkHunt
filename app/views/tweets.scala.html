@@ -2,10 +2,22 @@
 
 @scripts = {
     <script src='@routes.Assets.at("js/stream.js")' type="text/javascript"></script>
+    <script>
+
+        (function(){            
+            $('.navbar').addClass('opaque');     
+
+            // link click functionality
+            $('.timeline-link').on('click', function(){
+                console.log('This works!');
+            });
+        })();
+
+    </script>
 }
 
 @navleft = {
-    <div class="container-fluid search-container">
+   <!--  <div class="container-fluid search-container">
         <form class="navbar-form navbar-left" role="search">
             <label for="search" class="sr-only">Search tweets</label>
             <input type="text" name="search" id="search" class="form-control search-input" placeholder="Search tweets"/>
@@ -14,51 +26,80 @@
             @*<button id="addBtn">Add to watched terms</button>*@
             @*<button id="stopBtn">Stop Watching</button>*@
         </form>
-    </div>
+    </div> -->
 }
 
 @content = {
     <div class="rows container-fluid">
-        <div class="col-xs-6 left-pane">
-            <div id="twitstream" class="twitstream" data-ws-url="@routes.TwitStream.getStream.webSocketURL()" >
-                <div class="twitstream-contents">
-                    <div class="search-title-container row">
-                        <div class="col-md-10">
-                            <h2 class="search-title">Tweets on <strong><span id="search-query"></span></strong></h2>
-                        </div>
-                        <div class="col-md-1">
-                            <button class="btn btn-default btn-sm toggle-button glyphicon-stop" id="stopBtn">Stop</button>
+        <div class="margin-top-100">
+
+            
+
+            <section class="twitter-stream row"> 
+            
+                    <div id="twitstream" class="twitstream" data-ws-url="@routes.TwitStream.getStream.webSocketURL()" >
+
+                        <!-- Search container -->
+                        <div class="container-fluid search-container">
+                            <form class="col-md-6 navbar-left" role="search">
+                                <label for="search" class="sr-only">Search tweets</label>
+                                <div class="input-group">
+                                  <input type="text" name="search" id="search" class="form-control search-input" placeholder="Search tweets">
+                                  <span class="input-group-btn">
+                                    <button id="searchBtn" class="btn btn-lh search-btn"><i class="fa fa-search"></i></button>
+                                  </span>
+                                </div>
+                                <!-- <input type="text" name="search" id="search" class="form-control search-input" placeholder="Search tweets"/>
+                                <button id="searchBtn" class="search-btn"><span class="glyphicon glyphicon-search "></span></button> -->
+                                @*<button id="searchBtn" >Search</button>*@
+                                @*<button id="addBtn">Add to watched terms</button>*@
+                                @*<button id="stopBtn">Stop Watching</button>*@
+                            </form>
+                        </div> 
+
+                        <!-- Stream container -->
+                        <div class="twitstream-contents">
+                            <div class="search-title-container row">
+                                <div class="col-md-10">
+                                    <h2 class="search-title">Tweets on <strong><span id="search-query"></span></strong></h2>
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-default btn-sm toggle-button" id="stopBtn"><i class="fa fa-stop"></i> Stop</button>
+                                </div>
+                            </div>
+                            <div class="new-tweets-container tweet">
+                                <div class="new-tweets-bar badge" data-tweets-count="0"><span id="new-tweets-count" class="new-tweets-count"></span>&nbsp;new tweets</div>
+                            </div>
+                            <ul class="tweet-stream" id="tweets" data-tweets-shown="0">
+                                @*<li class="tweet">
+                                <div class="tweetcontent media">
+                                <div class="media-left">
+                                <img src="http://pbs.twimg.com/profile_images/498178648113819648/Mao_82Qe_normal.png" class="media-object avatar">
+                                </div>
+                                <div class="media-body">
+                                <div class="tweet-header">
+                                <strong class="username">Sample User</strong>
+                                <span class="handle">@@TwitterHandle</span>
+                                </div>
+                                <p class="tweettext">A quick brown fox jumped over the lazy dog. http://bit.ly/abCd123</p>
+                                <div class="metadata">Tue Apr 21 23:20:04 IST 2015</div>
+                                </div>
+                                </div>
+                                </li>*@
+                                <li class="endelement pull-right" data-expanded-url="" >Powered by Twitter</li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="new-tweets-container tweet">
-                        <div class="new-tweets-bar badge" data-tweets-count="0"><span id="new-tweets-count" class="new-tweets-count"></span>&nbsp;new tweets</div>
-                    </div>
-                    <ul id="tweets" data-tweets-shown="0">
-                        @*<li class="tweet">
-                        <div class="tweetcontent media">
-                        <div class="media-left">
-                        <img src="http://pbs.twimg.com/profile_images/498178648113819648/Mao_82Qe_normal.png" class="media-object avatar">
-                        </div>
-                        <div class="media-body">
-                        <div class="tweet-header">
-                        <strong class="username">Sample User</strong>
-                        <span class="handle">@@TwitterHandle</span>
-                        </div>
-                        <p class="tweettext">A quick brown fox jumped over the lazy dog. http://bit.ly/abCd123</p>
-                        <div class="metadata">Tue Apr 21 23:20:04 IST 2015</div>
-                        </div>
-                        </div>
-                        </li>*@
-                        <li class="endelement pull-right" data-expanded-url="" >Powered by Twitter</li>
-                    </ul>
+            </section>
+
+            <!-- this is where the atricle from the link is rendered -->
+            <section class="row right-pane">
+                <div class="external-article embed-responsive embed-responsive-4by3">
+                    <div id="article-preview"></div>
                 </div>
-            </div>
+            </section>
         </div>
-        <div class="col-xs-6 right-pane">
-            <div class="external-article embed-responsive embed-responsive-4by3">
-                <div id="article-preview"></div>
-            </div>
-        </div>
+            
     </div>
 }
 
