@@ -1,7 +1,7 @@
 package controllers
 
 import actors.UserActor
-import models.Users
+import models.User
 import play.api.Play
 import play.api.Play.current
 import play.api.libs.json.JsValue
@@ -23,7 +23,13 @@ object TwitStream extends Controller {
   }
 
   def relogin = Action { implicit request =>
-    Ok(views.html.twitterauth())
+    request.session.get("userid") match {
+      case Some(userid) =>
+        play.Logger.debug("User is logged in. userid = " + request.session.get("userid").get)
+        Ok(views.html.tweets())
+      case None =>
+        Ok(views.html.twitterauth())
+    }
   }
 
   def untrail() = Action {
@@ -32,7 +38,7 @@ object TwitStream extends Controller {
 
   def getStream = WebSocket.tryAcceptWithActor[JsValue, String] { request =>
 
-    Future.successful(Users.getAuthData(request.session.get("userid").getOrElse("")) match {
+    Future.successful(User.getAuthData(request.session.get("userid").getOrElse("")) match {
       case None =>
         Left(Forbidden)
       case Some(authData) =>
