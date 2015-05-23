@@ -102,7 +102,7 @@ $ ->
       '</div>' +
       '<div class="media-body">' +
       '<div class="tweet-header">' +
-      '<strong class="username">' + tweet.user + '</strong><span>&nbsp;</span><span class="handle">@' + tweet.screenName + '</span>' +
+      '<span class="username">' + tweet.user + '</span><span>&nbsp;</span><span class="handle">@' + tweet.screenName + '</span>' +
       '</div>' +
       '<p class="tweettext">' + tweet.text + '</p>' +
       '<div class="metadata">' + tweet.createdAt + '</div>' +
