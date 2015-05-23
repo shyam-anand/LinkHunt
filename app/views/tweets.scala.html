@@ -30,24 +30,27 @@
 }
 
 @content = {
-    <div class="rows container-fluid">
+    <style>
+    
+    </style>
+    <div class="row container-fluid">
         <div class="margin-top-100">
 
-            
-
-            <section class="twitter-stream row"> 
+            <div class="col-md-6">
+                <section class="twitter-stream row"> 
             
                     <div id="twitstream" class="twitstream" data-ws-url="@routes.TwitStream.getStream.webSocketURL()" >
 
                         <!-- Search container -->
                         <div class="container-fluid search-container">
-                            <form class="col-md-6 navbar-left" role="search">
+                            <form class="col-md-8 navbar-left" role="search">
                                 <label for="search" class="sr-only">Search tweets</label>
                                 <div class="input-group">
                                   <input type="text" name="search" id="search" class="form-control search-input" placeholder="Search tweets">
                                   <span class="input-group-btn">
                                     <button id="searchBtn" class="btn btn-lh search-btn"><i class="fa fa-search"></i></button>
                                   </span>
+
                                 </div>
                                 <!-- <input type="text" name="search" id="search" class="form-control search-input" placeholder="Search tweets"/>
                                 <button id="searchBtn" class="search-btn"><span class="glyphicon glyphicon-search "></span></button> -->
@@ -55,16 +58,14 @@
                                 @*<button id="addBtn">Add to watched terms</button>*@
                                 @*<button id="stopBtn">Stop Watching</button>*@
                             </form>
+                            <button class="btn btn-lh pull-right" id="stopBtn"><i class="fa fa-stop"></i> Stop</button>
                         </div> 
 
                         <!-- Stream container -->
                         <div class="twitstream-contents">
                             <div class="search-title-container row">
-                                <div class="col-md-10">
-                                    <h2 class="search-title">Tweets on <strong><span id="search-query"></span></strong></h2>
-                                </div>
-                                <div class="col-md-1">
-                                    <button class="btn btn-default btn-sm toggle-button" id="stopBtn"><i class="fa fa-stop"></i> Stop</button>
+                                <div class="col-md-12">
+                                    <h2 class="search-result-header">Tweets on <strong><span id="search-query"></span></strong></h2>                                   
                                 </div>
                             </div>
                             <div class="new-tweets-container tweet">
@@ -86,18 +87,23 @@
                                 </div>
                                 </div>
                                 </li>*@
-                                <li class="endelement pull-right" data-expanded-url="" >Powered by Twitter</li>
+                                @*<li class="endelement pull-right" data-expanded-url="" >Powered by Twitter</li>*@
                             </ul>
+                            <span class="endelement">Powered by Twitter</span>
                         </div>
                     </div>
-            </section>
+                </section>
+            </div>
 
-            <!-- this is where the atricle from the link is rendered -->
-            <section class="row right-pane">
-                <div class="external-article embed-responsive embed-responsive-4by3">
-                    <div id="article-preview"></div>
-                </div>
-            </section>
+            
+            <div class="col-md-6">
+                <!-- this is where the atricle from the link is rendered -->
+                <section class="row right-pane">
+                    <div class="external-article">
+                        <div id="article-preview"></div>
+                    </div>
+                </section>
+            </div>            
         </div>
             
     </div>

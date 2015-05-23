@@ -108,6 +108,7 @@
 
 body {
     font-family: 'Raleway';
+    overflow-x: hidden;
 }
 
 .content {
@@ -280,13 +281,63 @@ body {
 /* Twitter stream page */
 ul.tweet-stream {
     list-style: none;
+    height: 400px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border-bottom: 1px solid #ececec;
 }
 
 section.twitter-stream {
     width: 100%;
+    font-family: 'Raleway'
 }
 
 .twitstream {
-    width: 50%;
+    width: 80%;
     margin: 0 auto;
+    padding: 10px;
+    border: 1px solid #ececec;
+}
+
+.new-tweets-bar {
+    cursor: pointer;
+}
+
+.timeline-link {
+    cursor: pointer;
+}
+
+.search-result-header {
+    font-size: 1.2em;
+}
+
+.new-tweets-container {
+    text-align: center;
+}
+
+#article-preview {
+    padding: 20px;
+}
+
+h2.article-preview-title {
+    margin-top: 50px;
+}
+
+.article-preview-body {
+  height: 400px;
+  overflow-y: scroll;
+}
+
+.username {
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+.handle {
+    font-size: 1.2em;
+}
+
+.metadata {
+    margin-top: 5px;
+    margin-bottom: 10px
 }
