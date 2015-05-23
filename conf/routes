@@ -21,13 +21,4 @@ GET        /favicon.ico          controllers.Assets.at(path="/public", file="fav
 GET        /assets/*file         controllers.Assets.at(path="/public", file)
 
 # for webjars
-<<<<<<< HEAD
 GET        /webjars/*file        controllers.WebJarAssets.at(file)
-
-# Test Controller
-GET        /cacheget             controllers.TestController.cacheget
-GET        /cacheset             controllers.TestController.cacheset
-GET        /requestProps         controllers.TestController.requestProps
-=======
-GET        /webjars/*file        controllers.WebJarAssets.at(file)
->>>>>>> 0e755aa50cce933b03d54c388db663f7e6d93840
