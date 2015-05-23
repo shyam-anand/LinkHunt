@@ -6,7 +6,9 @@ import play.api.Play.current
 
 /* TODO: Cache user data */
 
-object Users {
+case class User (userId: Long, screen_name: String, token: String, secret: String)
+
+object User {
   def saveUser(userId: Long, screen_name: String, token: String, secret: String): Option[Long] = {
     DB.withConnection("twitstream") { implicit c =>
       SQL("INSERT INTO users(userid, screen_name, token, secret) VALUES ({userid}, {screen_name}, {token}, {secret}) ON DUPLICATE KEY UPDATE token = {token}, secret = {secret}")
