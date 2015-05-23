@@ -1,12 +1,21 @@
 @()
 
 @content = {
-  <div class="container center-block">
-    <div class="jumbotron">
-      <h1>Sign In</h1>
-      <p><a href="/signin">Click here to sign in with your Twitter account!</a></p>
+
+    <div class="main-banner text-center">
+        <div class="main-banner-content">
+            <h1>Collect articles on topics of interest</h1>
+            <h2>Get curated information from twitter and create your collections!</h2>
+            <a href="/signin" class="btn btn-tw btn-lg"><i class="fa fa-twitter"></i> Sign in with Twitter</a>
+        </div>        
     </div>
-  </div>
+
+    <div class="main-about">
+        <div class="main-about-content">
+            <h2 class="text-center">Information Management</h2>
+            <p>Link hunt lets you create a collection of tweets about your favourite topic and share with others.</p>
+        </div>
+    </div>
 }
 
 @stream(Html(""), content, Html(""))
