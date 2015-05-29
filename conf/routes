@@ -27,4 +27,3 @@ GET        /webjars/*file        controllers.WebJarAssets.at(file)
 GET        /cacheget             controllers.TestController.cacheget
 GET        /cacheset             controllers.TestController.cacheset
 GET        /requestProps         controllers.TestController.requestProps
-GET        /streamui             controllers.TestController.streamUI
