@@ -26,7 +26,7 @@ object TwitStream extends Controller {
     request.session.get("userid") match {
       case Some(userid) =>
         play.Logger.debug("User is logged in. userid = " + request.session.get("userid").get)
-        Ok(views.html.tweets())
+        Ok(Redirect("/"))
       case None =>
         Ok(views.html.twitterauth())
     }
