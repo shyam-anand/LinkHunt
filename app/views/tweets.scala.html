@@ -33,40 +33,43 @@
     <div class="row container-fluid">
         <div class="margin-top-100">
 
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Search container -->
+                    <div class="container-fluid search-container">
+                        <form class="col-md-8 navbar-left" role="search">
+                            <label for="search" class="sr-only">Search tweets</label>
+                            <div class="input-group">
+                              <input type="search" name="search" id="search" class="form-control search-input" placeholder="Search tweets">
+                              <span class="input-group-btn">
+                                <button id="searchBtn" class="btn btn-lh search-btn"><i class="fa fa-search"></i></button>
+                              </span>
+
+                            </div>
+                            <!-- <input type="text" name="search" id="search" class="form-control search-input" placeholder="Search tweets"/>
+                            <button id="searchBtn" class="search-btn"><span class="glyphicon glyphicon-search "></span></button> -->
+                            @*<button id="searchBtn" >Search</button>*@
+                            @*<button id="addBtn">Add to watched terms</button>*@
+                            @*<button id="stopBtn">Stop Watching</button>*@
+                        </form>
+                        <button class="btn btn-lh pull-right" id="stopBtn"><i class="fa fa-stop"></i> Stop</button>
+                    </div> 
+                </div>
+            </div>
+
             <div class="col-md-6">
-                <section class="twitter-stream row"> 
-            
-                    <div id="twitstream" class="twitstream" data-ws-url="@routes.TwitStream.getStream.webSocketURL()" >
-
-                        <!-- Search container -->
-                        <div class="container-fluid search-container">
-                            <form class="col-md-8 navbar-left" role="search">
-                                <label for="search" class="sr-only">Search tweets</label>
-                                <div class="input-group">
-                                  <input type="text" name="search" id="search" class="form-control search-input" placeholder="Search tweets">
-                                  <span class="input-group-btn">
-                                    <button id="searchBtn" class="btn btn-lh search-btn"><i class="fa fa-search"></i></button>
-                                  </span>
-
-                                </div>
-                                <!-- <input type="text" name="search" id="search" class="form-control search-input" placeholder="Search tweets"/>
-                                <button id="searchBtn" class="search-btn"><span class="glyphicon glyphicon-search "></span></button> -->
-                                @*<button id="searchBtn" >Search</button>*@
-                                @*<button id="addBtn">Add to watched terms</button>*@
-                                @*<button id="stopBtn">Stop Watching</button>*@
-                            </form>
-                            <button class="btn btn-lh pull-right" id="stopBtn"><i class="fa fa-stop"></i> Stop</button>
-                        </div> 
+                <section class="twitter-stream row">             
+                    <div id="twitstream" class="twitstream" data-ws-url="@routes.TwitStream.getStream.webSocketURL()" >                        
 
                         <!-- Stream container -->
                         <div class="twitstream-contents">
                             <div class="search-title-container row">
                                 <div class="col-md-12">
-                                    <h2 class="search-result-header">Tweets on <strong><span id="search-query"></span></strong></h2>                                   
+                                    <h2 class="search-result-header text-center">Tweets on <strong><span id="search-query"></span></strong></h2>                                   
                                 </div>
                             </div>
                             <div class="new-tweets-container tweet">
-                                <div class="new-tweets-bar badge" data-tweets-count="0"><span id="new-tweets-count" class="new-tweets-count"></span>&nbsp;new tweets</div>
+                                <div class="new-tweets-bar" data-tweets-count="0"><span id="new-tweets-count" class="new-tweets-count"></span>&nbsp;new tweets</div>
                             </div>
                             <ul class="tweet-stream" id="tweets" data-tweets-shown="0">
                                 @*<li class="tweet">
@@ -86,7 +89,8 @@
                                 </li>*@
                                 @*<li class="endelement pull-right" data-expanded-url="" >Powered by Twitter</li>*@
                             </ul>
-                            <span class="endelement">Powered by Twitter</span>
+                            <span class="endelement pull-right">Powered by Twitter</span>
+                            <div class="clearfix"></div>
                         </div>
                     </div>
                 </section>
