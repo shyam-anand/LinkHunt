@@ -1,6 +1,6 @@
 package controllers
 
-import models.Users._
+import models.User._
 import play.api.Play
 import play.api.Play.current
 import play.api.cache.Cache
