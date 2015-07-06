@@ -17,7 +17,6 @@ libraryDependencies ++= Seq(
   "org.twitter4j" % "twitter4j-core" % "[4.0,)",
   "org.twitter4j" % "twitter4j-stream" % "[4.0,)",
   "org.webjars" %% "webjars-play" % "2.3.0-2",
-  "org.webjars.bower" % "bootstrap-css-only" % "3.3.4",
-  "net.debasishg" %% "redisclient" % "3.0"
+  "org.webjars.bower" % "bootstrap-css-only" % "3.3.4"
 )
 
