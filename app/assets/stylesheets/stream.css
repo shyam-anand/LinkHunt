@@ -77,9 +77,8 @@ button {
 .logo {
     color: #5B6C73;
     font-size: xx-large;
-    font-family: Mistral, cursive;
+    font-family: 'Oregano', cursive;
     font-style: italic;
-    font-weight: lighter;
     margin-top: 0 !important;
 }
 
@@ -99,6 +98,7 @@ article.content {
     border-radius: 12px;
     min-width: 300px;
     padding: 0px;
+    display: none;
 }
 
 .twitstream-contents {
@@ -191,6 +191,7 @@ article.content {
 }
 
 .external-article {
+    display: none;
     border: thin solid #e1e8ed;
     border-radius: 12px;
     height: 100%;

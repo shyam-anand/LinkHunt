@@ -29,6 +29,7 @@ class TweetActor(authData: Map[String, String]) extends Actor with Stash {
       stash()
   }
 
+
   var connectionStatus = false
   
   val config = new ConfigurationBuilder()
@@ -99,7 +100,7 @@ class TweetActor(authData: Map[String, String]) extends Actor with Stash {
     play.Logger.debug("[TweetActor.watchTerm] Setting watchTerm to '" + term + "'")
     twitterStream.cleanUp()
     val trackStrings = term.split(",")
-    filterQuery.track(trackStrings)
+    filterQuery.track(term)
     twitterStream.filter(filterQuery)
   }
 

@@ -21,7 +21,7 @@ $ ->
       tweet = message.data
       tweetsShown = $("#tweets").data("tweets-shown")
       console.log("tweetsShown = " + tweetsShown)
-      if (tweetsShown < 0)
+      if (tweetsShown < 10)
         console.log("showing tweet")
         showTweet(tweet)
       else
@@ -83,6 +83,8 @@ $ ->
     expandedUrl = clickedLink.data("expanded-url")
     console.log(clickedLink + " -- url -- " + expandedUrl)
     if (expandedUrl.length > 0)
+      $(".external-article").show()
+      $("#article-preview").html('<span class="glyphicon glyphicon-hourglass"></span>Fetching article...')
       showArticle(expandedUrl)
     else
       console.log("No expanded URL")
@@ -126,6 +128,7 @@ $ ->
       success: (data, textStatus, jqXHR) ->
         if (data.status == true)
           $("#article-preview").html('<h2 class="article-preview-title">' + data.title + '</h2>' +
-          '<p class="article-preview-body">' + data.content + '</p>')
+          '<p class="article-preview-body">' + data.content + '</p>' +
+          '<div class="link-to-original-article"><a href="' + url + '">View original <span class="glyphicon glyphicon-new-window"></span></a></div>')
         else
           showError(data.title + ": " + data.content)

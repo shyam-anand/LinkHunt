@@ -8,7 +8,7 @@
     <div class="container-fluid search-container">
         <form class="navbar-form navbar-left" role="search">
             <label for="search" class="sr-only">Search tweets</label>
-            <input type="text" name="search" id="search" class="form-control search-input" placeholder="Search tweets"/>
+            <input type="text" name="search" id="search" class="form-control search-input" placeholder="Search"/>
             <button id="searchBtn" class="search-btn"><span class="glyphicon glyphicon-search "></span></button>
             @*<button id="searchBtn" >Search</button>*@
             @*<button id="addBtn">Add to watched terms</button>*@
@@ -20,6 +20,9 @@
 @content = {
     <div class="rows container-fluid">
         <div class="col-xs-6 left-pane">
+            <div id="intro-text">
+                <h4>Search for stuff you want to follow</h4>
+            </div>
             <div id="twitstream" class="twitstream" data-ws-url="@routes.TwitStream.getStream.webSocketURL()" >
                 <div class="twitstream-contents">
                     <div class="search-title-container row">
