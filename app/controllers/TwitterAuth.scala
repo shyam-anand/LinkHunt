@@ -143,4 +143,16 @@ object TwitterAuth extends Controller {
 
     factory.getInstance
   }
+
+  /**
+   * Destroys the current session and redirects to home
+   * @return null
+   */
+  def logout = Action {
+    Redirect("/").withNewSession.flashing(
+      "success" -> "You've been logged out!"
+    )
+  } 
 }
+
+ 
