@@ -1,12 +1,16 @@
-@()
+@()(implicit flash: Flash)
 
 @content = {
-  <div class="container center-block">
-    <div class="jumbotron">
-      <h1>Sign In</h1>
-      <p><a href="/signin">Click here to sign in with your Twitter account!</a></p>
+    <div class="home-banner">
+        @if(!flash.get("success").isEmpty) {
+            <span class="flash-message">@flash.get("success")</span class="flash-message">
+        }      
+        <div class="banner-content text-center">                  
+            <h1 class="brand-logo">Link<span class="lh">Hunt</span></h1>
+            <h2 class="brand-desc">Content aggregation from Twitter conversations</h2>
+            <a href="/signin" class="btn btn-lh btn-lg">Sign In With Twitter</a>
+        </div>  
     </div>
-  </div>
 }
 
 @stream(Html(""), content, Html(""))

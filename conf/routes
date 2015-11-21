@@ -11,6 +11,7 @@ GET        /twitstream           controllers.TwitStream.index
 GET        /signin               controllers.TwitterAuth.authenticate
 GET        /authenticate         controllers.TwitterAuth.authenticate
 GET        /authenticated        controllers.TwitterAuth.authenticated
+GET        /logout               controllers.TwitterAuth.logout
 GET        /relogin              controllers.TwitStream.relogin
 GET        /stream/              controllers.TwitStream.getStream
 GET        /getpreview           controllers.ArticlePreviews.getpreview(url: String)
