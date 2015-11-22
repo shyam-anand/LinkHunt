@@ -116,7 +116,7 @@ body {
     padding: 0;
     overflow-x: hidden; 
     font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
-    color: #FFFFFF;
+    color: #4c4c4c;
     font-size: 10px;
 }
 
@@ -151,6 +151,27 @@ h1.brand-logo {
     font-family: 'Raleway', sans-serif;
     font-size: 10rem;
     text-transform: uppercase;
+}
+
+a.navbar-brand {
+    font-family: 'Raleway', sans-serif;
+    color: #FFFFFF;
+    text-transform: uppercase;
+}
+
+.navbar-nav>li>a, .navbar-nav>li>a:active, .navbar-nav>li>a:visited {
+    color: #FFFFFF;
+    background: transparent;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.3rem;
+}
+
+.navbar-nav>li>a:hover {
+    color: #FFFFFF;
+    background: transparent;
+    text-decoration: underline;
 }
 
 h2.brand-desc {
@@ -188,11 +209,17 @@ h2.brand-desc {
     padding: 20px;
 }
 
-.nav-container {
+/*.nav-container {
     border-bottom: 1px solid #e1e8ed;
     height: 60px;
     z-index: 100;
     background-color: #ededee;
+}*/
+
+.nav-container {
+    background-color: #1B1B25;
+    /*border-bottom: 1px solid #5B6C73;*/
+    z-index: 100;    
 }
 
 .search-container {
@@ -247,23 +274,28 @@ h2.brand-desc {
     z-index:210;
 }
 
+#search {
+    background: transparent;
+    border: 1px solid #9c9c9c;
+    border-radius: 0;
+    color: #4c4c4c;
+}
+
 .logo-container {
     background-color: inherit;
     margin-right: 20px;
 }
 
-.logo {
-    color: #5B6C73;
-    font-size: xx-large;
-    font-family: 'Oregano', cursive;
-    font-style: italic;
-    margin-top: 0 !important;
+article.home-content {
+    padding: 0;
+    margin: 0;
 }
 
 article.content {
     padding: 0;
-    margin: 0;
-    
+    margin-top: 150px; 
+    color: #444444;   
+    font-family: 'Raleway', sans-serif;
 }
 
 .rows {
@@ -272,9 +304,8 @@ article.content {
 }
 
 .twitstream {
-    border: thin solid #e1e8ed;
-    border-radius: 12px;
-    min-width: 300px;
+    border: 1px solid #e1e8ed;
+    border-radius: 0;
     padding: 0px;
     display: none;
 }
@@ -284,7 +315,7 @@ article.content {
 }
 
 .search-title-container {
-    border-bottom: 1px solid #e1e8ed;
+    border-bottom: 1px solid #FFFFFF;
     margin: 0;
 }
 
@@ -293,6 +324,8 @@ article.content {
     font-weight: lighter;
     line-height: 20px;
     margin-top: 5px;
+    color: #4c4c4c;
+    text-transform: uppercase;
 }
 
 .twitstream-contents ul {
@@ -326,6 +359,7 @@ article.content {
     font-weight: bold;
     font-size: 14px;
     margin-left: 0px;
+    color: #444444;
 }
 
 .handle {
@@ -337,6 +371,7 @@ article.content {
     line-height: 18px;
     font-size: 14px;
     margin: 0;
+    color: #444444;
 }
 
 .metadata {
@@ -371,7 +406,7 @@ article.content {
 .external-article {
     display: none;
     border: thin solid #e1e8ed;
-    border-radius: 12px;
+    border-radius:0;
     height: 100%;
     min-height: 40px;
     padding: 5px 10px;
@@ -380,8 +415,6 @@ article.content {
 .twitstream-error-msg {
     display: none;
     z-index: 2000;
-    margin-top: 20px;
-    margin-bottom: -5px;
     cursor: pointer;
 }
 
@@ -392,4 +425,8 @@ article.content {
 
 .new-tweets-container:hover {
     background: #f8f8fa;
+}
+
+#article-preview {
+    color: #4c4c4c;
 }
