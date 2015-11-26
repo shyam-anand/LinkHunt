@@ -58,7 +58,7 @@ $ ->
 
   String::strip = -> if String::trim? then @trim() else @replace /^\s+|\s+$/g, ""
 
-  $("#searchBtn").click (event) ->
+  $("#mainSearchForm").submit (event) ->
     event.preventDefault()
     searchQuery = $("#search").val()
     if (searchQuery.strip() != "")

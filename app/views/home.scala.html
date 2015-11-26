@@ -1,0 +1,24 @@
+@* Layout for TwitStream *@
+@(scripts: Html = Html(""), content: Html, navleft: Html)
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LinkHunt - Aggregating content from Twitter conversations</title>
+    <link rel="icon" href="@routes.Assets.at("img/LH.png")" type="image/png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel='stylesheet' href="@routes.Assets.at("stylesheets/bootstrap.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/stream.css")" />
+    @scripts
+</head>
+<body>
+    
+    <article class="home-content">
+        @content
+    </article>
+</body>
+</html>
